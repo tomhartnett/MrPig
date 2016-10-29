@@ -12,6 +12,10 @@
 		C91351411DC19EF200162022 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C913513F1DC19EF200162022 /* Main.storyboard */; };
 		C91351431DC19EF200162022 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C91351421DC19EF200162022 /* Assets.xcassets */; };
 		C91351461DC19EF200162022 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C91351441DC19EF200162022 /* LaunchScreen.storyboard */; };
+		C91351511DC19F8500162022 /* GameHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C913514E1DC19F8500162022 /* GameHelper.swift */; };
+		C91351521DC19F8500162022 /* GameUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C913514F1DC19F8500162022 /* GameUtils.swift */; };
+		C91351531DC19F8500162022 /* SCNAction+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91351501DC19F8500162022 /* SCNAction+Extensions.swift */; };
+		C91351551DC19FA700162022 /* MrPig.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = C91351541DC19FA700162022 /* MrPig.scnassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +26,10 @@
 		C91351421DC19EF200162022 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C91351451DC19EF200162022 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C91351471DC19EF200162022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C913514E1DC19F8500162022 /* GameHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameHelper.swift; sourceTree = "<group>"; };
+		C913514F1DC19F8500162022 /* GameUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUtils.swift; sourceTree = "<group>"; };
+		C91351501DC19F8500162022 /* SCNAction+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNAction+Extensions.swift"; sourceTree = "<group>"; };
+		C91351541DC19FA700162022 /* MrPig.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = MrPig.scnassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,8 @@
 		C913513A1DC19EF200162022 /* Mr.Pig */ = {
 			isa = PBXGroup;
 			children = (
+				C913514D1DC19F8500162022 /* GameUtils */,
+				C91351541DC19FA700162022 /* MrPig.scnassets */,
 				C913513B1DC19EF200162022 /* AppDelegate.swift */,
 				C913513D1DC19EF200162022 /* ViewController.swift */,
 				C913513F1DC19EF200162022 /* Main.storyboard */,
@@ -62,6 +72,16 @@
 				C91351471DC19EF200162022 /* Info.plist */,
 			);
 			path = Mr.Pig;
+			sourceTree = "<group>";
+		};
+		C913514D1DC19F8500162022 /* GameUtils */ = {
+			isa = PBXGroup;
+			children = (
+				C913514E1DC19F8500162022 /* GameHelper.swift */,
+				C913514F1DC19F8500162022 /* GameUtils.swift */,
+				C91351501DC19F8500162022 /* SCNAction+Extensions.swift */,
+			);
+			path = GameUtils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -91,7 +111,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Sleekible LLC";
 				TargetAttributes = {
 					C91351371DC19EF200162022 = {
@@ -127,6 +147,7 @@
 				C91351461DC19EF200162022 /* LaunchScreen.storyboard in Resources */,
 				C91351431DC19EF200162022 /* Assets.xcassets in Resources */,
 				C91351411DC19EF200162022 /* Main.storyboard in Resources */,
+				C91351551DC19FA700162022 /* MrPig.scnassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +159,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C913513E1DC19EF200162022 /* ViewController.swift in Sources */,
+				C91351531DC19F8500162022 /* SCNAction+Extensions.swift in Sources */,
+				C91351521DC19F8500162022 /* GameUtils.swift in Sources */,
 				C913513C1DC19EF200162022 /* AppDelegate.swift in Sources */,
+				C91351511DC19F8500162022 /* GameHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +206,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -232,6 +257,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -302,6 +328,7 @@
 				C913514C1DC19EF200162022 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
