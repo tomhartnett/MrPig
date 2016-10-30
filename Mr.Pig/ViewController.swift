@@ -263,6 +263,28 @@ class ViewController: UIViewController {
     func updatePositions() {
         
         collisionNode.position = pigNode.position
+        
+        let lerpX = (pigNode.position.x - cameraFollowNode.position.x) * 0.05
+        let lerpZ = (pigNode.position.z - cameraFollowNode.position.z) * 0.05
+        cameraFollowNode.position.x += lerpX
+        cameraFollowNode.position.z += lerpZ
+        
+        lightFollowNode.position = cameraFollowNode.position
+    }
+    
+    func updateTraffic() {
+        
+        for node in trafficNode.childNodes {
+            
+            if node.position.x > 25 {
+                
+                node.position.x = -25
+                
+            } else if node.position.x < -25 {
+                
+                node.position.x = 25
+            }
+        }
     }
 }
 
@@ -278,6 +300,8 @@ extension ViewController: SCNSceneRendererDelegate {
         game.updateHUD()
         
         updatePositions()
+        
+        updateTraffic()
     }
 }
 
