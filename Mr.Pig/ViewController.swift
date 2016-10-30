@@ -21,6 +21,13 @@ class ViewController: UIViewController {
     var cameraFollowNode: SCNNode!
     var lightFollowNode: SCNNode!
     var trafficNode: SCNNode!
+    var driveLeftAction: SCNAction!
+    var driveRightAction: SCNAction!
+    var jumpLeftAction: SCNAction!
+    var jumpRightAction: SCNAction!
+    var jumpForwardAction: SCNAction!
+    var jumpBackwardAction: SCNAction!
+    var triggerGameOver: SCNAction!
     
     override var prefersStatusBarHidden: Bool { return true }
     
@@ -48,11 +55,35 @@ class ViewController: UIViewController {
         game.state = .tapToPlay
     }
     
+    func handleGesture(_ sender: UISwipeGestureRecognizer) {
+        
+        guard game.state == .playing else {
+            return
+        }
+        
+        switch sender.direction {
+        case UISwipeGestureRecognizerDirection.up:
+            pigNode.runAction(jumpForwardAction)
+        case UISwipeGestureRecognizerDirection.down:
+            pigNode.runAction(jumpBackwardAction)
+        case UISwipeGestureRecognizerDirection.left:
+            if pigNode.position.x > -15 {
+                pigNode.runAction(jumpLeftAction)
+            }
+        case UISwipeGestureRecognizerDirection.right:
+            if pigNode.position.x < 15 {
+                pigNode.runAction(jumpRightAction)
+            }
+        default:
+            break
+        }
+    }
+    
     func setupScenes() {
         
         scnView = SCNView(frame: self.view.frame)
         self.view.addSubview(scnView)
-        
+
         gameScene = SCNScene(named: "/MrPig.scnassets/GameScene.scn")
         splashScene = SCNScene(named: "/MrPig.scnassets/SplashScene.scn")
         
@@ -71,14 +102,82 @@ class ViewController: UIViewController {
     
     func setupActions() {
         
+        driveLeftAction = SCNAction.repeatForever(SCNAction.move(by: SCNVector3Make(-2.0, 0, 0), duration: 1.0))
+        driveRightAction = SCNAction.repeatForever(SCNAction.move(by: SCNVector3Make(2.0, 0, 0), duration: 1.0))
+        
+        let duration = 0.2
+        let bounceUpAction = SCNAction.moveBy(x: 0, y: 1.0, z: 0, duration: duration * 0.5)
+        let bounceDownAction = SCNAction.moveBy(x: 0, y: -1.0, z: 0, duration: duration * 0.5)
+        bounceUpAction.timingMode = .easeOut
+        bounceDownAction.timingMode = .easeIn
+        let bounceAction = SCNAction.sequence([bounceUpAction, bounceDownAction])
+        
+        let moveLeftAction = SCNAction.moveBy(x: -1.0, y: 0, z: 0, duration: duration)
+        let moveRightAction = SCNAction.moveBy(x: 1.0, y: 0, z: 0, duration: duration)
+        let moveForwardAction = SCNAction.moveBy(x: 0, y: 0, z: -1.0, duration: duration)
+        let moveBackwardAction = SCNAction.moveBy(x: 0, y: 0, z: 1.0, duration: duration)
+        
+        let turnLeftAction = SCNAction.rotateTo(x: 0, y: convertToRadians(angle: -90), z: 0, duration: duration, usesShortestUnitArc: true)
+        let turnRightAction = SCNAction.rotateTo(x: 0, y: convertToRadians(angle: 90), z: 0, duration: duration, usesShortestUnitArc: true)
+        let turnForwardAction = SCNAction.rotateTo(x: 0, y: convertToRadians(angle: 180), z: 0, duration: duration, usesShortestUnitArc: true)
+        let turnBackwardAction = SCNAction.rotateTo(x: 0, y: convertToRadians(angle: 0), z: 0, duration: duration, usesShortestUnitArc: true)
+        
+        jumpLeftAction = SCNAction.group([turnLeftAction, bounceAction, moveLeftAction])
+        jumpRightAction = SCNAction.group([turnRightAction, bounceAction, moveRightAction])
+        jumpForwardAction = SCNAction.group([turnForwardAction, bounceAction, moveForwardAction])
+        jumpBackwardAction = SCNAction.group([turnBackwardAction, bounceAction, moveBackwardAction])
+        
+        let spinAround = SCNAction.rotateBy(x: 0, y: convertToRadians(angle: 720), z: 0, duration: 2.0)
+        let riseUp = SCNAction.moveBy(x: 0, y: 10, z: 0, duration: 2.0)
+        let fadeOut = SCNAction.fadeOpacity(to: 0, duration: 2.0)
+        let goodByePig = SCNAction.group([spinAround, riseUp, fadeOut])
+        let gameOver = SCNAction.run { (node: SCNNode) -> Void in
+            
+            self.pigNode.position = SCNVector3(x: 0, y: 0, z: 0)
+            self.pigNode.opacity = 1.0
+            self.startSplash()
+        }
+        
+        triggerGameOver = SCNAction.sequence([goodByePig, gameOver])
     }
     
     func setupTraffic() {
         
+        for node in trafficNode.childNodes {
+            
+            if node.name?.contains("Bus") == true {
+                driveLeftAction.speed = 1.0
+                driveRightAction.speed = 1.0
+            } else {
+                driveLeftAction.speed = 2.0
+                driveRightAction.speed = 2.0
+            }
+            
+            if node.eulerAngles.y > 0 {
+                node.runAction(driveLeftAction)
+            } else {
+                node.runAction(driveRightAction)
+            }
+        }
     }
     
     func setupGestures() {
         
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleGesture(_:)))
+        swipeRight.direction = .right
+        scnView.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleGesture(_:)))
+        swipeLeft.direction = .left
+        scnView.addGestureRecognizer(swipeLeft)
+        
+        let swipeForward = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleGesture(_:)))
+        swipeForward.direction = .up
+        scnView.addGestureRecognizer(swipeForward)
+        
+        let swipeBackward = UISwipeGestureRecognizer(target: self, action: #selector(ViewController.handleGesture(_:)))
+        swipeBackward.direction = .down
+        scnView.addGestureRecognizer(swipeBackward)
     }
     
     func setupSounds() {
@@ -102,6 +201,8 @@ class ViewController: UIViewController {
         
         game.state = .gameOver
         game.reset()
+        
+        pigNode.runAction(triggerGameOver)
     }
     
     func startSplash() {
