@@ -87,6 +87,8 @@ class ViewController: UIViewController {
             (sender.direction == .left && !activeLeftCollision) ||
             (sender.direction == .right && !activeRightCollision) else {
                 
+            game.playSound(node: pigNode, name: "Blocked")
+                
             return
         }
         
@@ -106,6 +108,8 @@ class ViewController: UIViewController {
         default:
             break
         }
+        
+        game.playSound(node: pigNode, name: "Jump")
     }
     
     func setupScenes() {
@@ -224,10 +228,38 @@ class ViewController: UIViewController {
     
     func setupSounds() {
         
+        if game.state == .tapToPlay {
+            
+            let music = SCNAudioSource(fileNamed: "MrPig.scnassets/Audio/Music.mp3")!
+            music.volume = 0.3
+            music.loops = true
+            music.shouldStream = true
+            music.isPositional = false
+            
+            let musicPlayer = SCNAudioPlayer(source: music)
+            splashScene.rootNode.addAudioPlayer(musicPlayer)
+            
+        } else if game.state == .playing {
+            
+            let traffic = SCNAudioSource(fileNamed: "MrPig.scnassets/Audio/Traffic.mp3")!
+            traffic.volume = 0.3
+            traffic.loops = true
+            traffic.shouldStream = true
+            traffic.isPositional = true
+            
+            let trafficPlayer = SCNAudioPlayer(source: traffic)
+            gameScene.rootNode.addAudioPlayer(trafficPlayer)
+            
+            game.loadSound(name: "Jump", fileNamed: "MrPig.scnassets/Audio/Jump.wav")
+            game.loadSound(name: "Blocked", fileNamed: "MrPig.scnassets/Audio/Blocked.wav")
+            game.loadSound(name: "Crash", fileNamed: "MrPig.scnassets/Audio/Crash.wav")
+            game.loadSound(name: "CollectCoin", fileNamed: "MrPig.scnassets/Audio/CollectCoin.wav")
+            game.loadSound(name: "BankCoin", fileNamed: "MrPig.scnassets/Audio/BankCoin.wav")
+        }
     }
     
     func startGame() {
-        
+
         splashScene.isPaused = true
         
         let transition = SKTransition.doorsOpenVertical(withDuration: 1.0)
@@ -237,6 +269,11 @@ class ViewController: UIViewController {
             self.setupSounds()
             self.gameScene.isPaused = false
         })
+        
+        /* scnView.scene = gameScene
+        game.state = .playing
+        setupSounds()
+        gameScene.isPaused = false */
     }
     
     func stopGame() {
@@ -253,11 +290,16 @@ class ViewController: UIViewController {
         
         let transition = SKTransition.doorsOpenVertical(withDuration: 1.0)
         scnView.present(splashScene, with: transition, incomingPointOfView: nil, completionHandler: {
-            
+        
             self.game.state = .tapToPlay
             self.setupSounds()
             self.splashScene.isPaused = false
         })
+        
+        /* scnView.scene = splashScene
+        game.state = .tapToPlay
+        setupSounds()
+        splashScene.isPaused = false */
     }
     
     func updatePositions() {
@@ -336,6 +378,7 @@ extension ViewController: SCNPhysicsContactDelegate {
         
         if contactNode.physicsBody?.categoryBitMask == BitMaskVehicle {
             
+            game.playSound(node: pigNode, name: "Crash")
             stopGame()
         }
         
@@ -348,6 +391,15 @@ extension ViewController: SCNPhysicsContactDelegate {
             })
             
             game.collectCoin()
+            game.playSound(node: pigNode, name: "CollectCoin")
+        }
+        
+        if contactNode.physicsBody?.categoryBitMask == BitMaskHouse {
+            
+            if game.bankCoins() == true {
+                
+                game.playSound(node: pigNode, name: "BankCoin")
+            }
         }
     }
     
